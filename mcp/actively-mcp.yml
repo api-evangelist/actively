@@ -1,0 +1,30 @@
+generated: '2026-07-17'
+method: searched
+status: marketing
+source: https://www.actively.ai/products/mcp-server
+name: Actively MCP
+summary: >-
+  Actively MCP is a productized Model Context Protocol server that connects
+  Actively's Per-Account Agents (per-account research, strategy, and memory)
+  directly into external AI tools. Marketed as an intelligence layer for AI
+  agents.
+integrations:
+- ChatGPT
+- Claude
+- Cowork
+capabilities:
+- per-account research
+- account strategy
+- persistent memory / reasoning loops
+- context enrichment for customer-facing agents
+endpoint: null
+authentication: null
+notes: >-
+  Publicly announced product page only. No hosted MCP server URL, tool schema,
+  or authentication detail is published; access is gated behind a sales/demo
+  process. Tool list is NOT derived (no public OpenAPI to ground it).
+evidence:
+- source: https://www.actively.ai/products/mcp-server
+  quote: >-
+    Actively MCP connects Per-Account Agents directly to ChatGPT, Cowork, and
+    the AI tools that reps already use.

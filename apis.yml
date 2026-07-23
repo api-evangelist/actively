@@ -1,8 +1,25 @@
 aid: actively
 name: Actively
-description: 'Actively is a company surfaced as a portfolio company of bain-capital-ventures and added
-  to the API Evangelist network as a stub for enrichment. Sector: ai-apps. This profile is a lead awaiting
-  the enrichment pipeline.'
+description: >-
+  Actively AI delivers "Intelligence-Led Revenue" — an AI revenue-intelligence
+  platform whose Per-Account Agents work every prospect and customer account
+  24/7, surfacing next-best-actions and helping go-to-market teams execute them
+  across the full lifecycle. The product spans an Agent Inbox, an Assistant,
+  Watchtower, an API for embedding GTM intelligence into internal tools and
+  workflows, and a hosted MCP server that connects its per-account agents into
+  ChatGPT, Claude, and Cowork. Actively is backed by Bain Capital Ventures.
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://framerusercontent.com/images/rYdlvukOk7Ivrd88T13uZVYfc.png
 url: https://raw.githubusercontent.com/api-evangelist/actively/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -16,6 +33,11 @@ modified: '2026-07-17'
 tags:
 - Company
 - Ai Apps
+- AI Agents
+- Revenue Intelligence
+- Sales
+- Go To Market
+- MCP
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -23,5 +45,32 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Conformance
+  url: conformance/actively-conformance.yml
+- type: Compliance
+  url: conformance/actively-conformance.yml
+- type: MCPServer
+  url: mcp/actively-mcp.yml
+- type: LLMsTxt
+  url: llms/actively-llms.txt
+- type: Security
+  url: security/actively-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/actively-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/actively-domain-security.yml
+- type: Blog
+  url: https://www.actively.ai/blog
+- type: SignUp
+  url: https://app.actively.ai/login
+- type: TermsOfService
+  url: https://www.actively.ai/terms
+- type: PrivacyPolicy
+  url: https://www.actively.ai/privacy
 - type: Website
   url: https://www.actively.ai/
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
