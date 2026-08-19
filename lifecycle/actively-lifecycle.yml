@@ -1,0 +1,106 @@
+generated: '2026-08-13'
+method: probed
+source: live probes of actively.ai hosts + https://www.actively.ai/sitemap.xml
+description: >-
+  Operational lifecycle posture for Actively AI. RESULT: no status page, no
+  changelog, no versioning policy, no deprecation policy and no published SLA.
+  Actively runs a live hosted MCP server with none of the operational
+  scaffolding an integrator would need to depend on it.
+
+versioning:
+  scheme: none-published
+  current_version: null
+  note: >-
+    The MCP endpoint is unversioned in its path (https://api.actively.ai/mcp).
+    MCP itself carries a protocol version in the initialize handshake, but
+    that is negotiated per-session and is not an Actively product version. No
+    API version header, date-version, or version-in-path convention is
+    published.
+
+status_page:
+  published: false
+  url: null
+  checked: '2026-08-13'
+  note: >-
+    NEGATIVE FINDING — DO NOT CREDIT. https://actively.statuspage.io/ returns
+    HTTP 200, which looks like a hit, but the subdomain is UNCLAIMED: it
+    serves Atlassian's own marketing page (title "Real-Time Incident
+    Communication with Statuspage | Atlassian"), not an Actively status page,
+    and /api/v2/summary.json does not return Statuspage JSON. status.actively.ai
+    does not resolve. This is a soft-200 false positive and is recorded here
+    so a later pass does not re-credit it.
+
+deprecation_policy:
+  published: false
+  url: null
+  sunset_header: unknown
+  rfc8594: false
+  note: >-
+    No deprecation or sunset policy is published anywhere on the site, and no
+    Deprecation/Sunset headers were observed on any anonymously reachable
+    response.
+
+changelog:
+  published: false
+  url: null
+  note: >-
+    www.actively.ai/changelog returns 404 and the sitemap lists no
+    changelog, release-notes or "what's new" page. The company blog
+    (www.actively.ai/blog, 34 posts) is thought-leadership marketing about
+    go-to-market strategy, not a product or API change log — it carries no
+    dated product releases.
+
+sla:
+  published: false
+  note: >-
+    No SLA, uptime commitment or support-response target is published. The
+    security page states only that "Infrastructure has been designed to be
+    fault tolerant. All databases operate in a cluster configuration."
+
+support:
+  channels:
+  - type: sales
+    url: https://www.actively.ai/demo
+  - type: email
+    address: security@actively.ai
+    scope: security only
+  note: >-
+    No support portal, help center, community forum or developer support
+    channel exists. The only non-security contact path is a demo request form.
+
+deprecated_operations: []
+deprecated_operations_note: >-
+  No OpenAPI is published and the MCP tool list is auth-gated, so no operation
+  inventory exists from which deprecations could be derived.
+
+evidence:
+- fetched: '2026-08-13'
+  url: https://actively.statuspage.io/
+  http_status: 200
+  verdict: false-positive
+  note: Unclaimed subdomain serving Atlassian marketing content.
+- fetched: '2026-08-13'
+  url: https://status.actively.ai/
+  http_status: 0
+  note: DNS does not resolve.
+- fetched: '2026-08-13'
+  url: https://www.actively.ai/changelog
+  http_status: 404
+- fetched: '2026-08-13'
+  url: https://www.actively.ai/docs
+  http_status: 404
+- fetched: '2026-08-13'
+  url: https://www.actively.ai/sitemap.xml
+  http_status: 200
+  note: 62 URLs, none operational (no status, changelog, SLA, or support page).
+
+findings:
+- >-
+  Actively ships a live, OAuth-protected, spec-clean MCP server but publishes
+  none of the operational contract around it — no status page, no changelog,
+  no deprecation policy, no SLA. An integrator has no way to be told when the
+  server breaks or changes.
+- >-
+  The gap is asymmetric and worth flagging to the provider: the hard part
+  (a correct MCP authorization chain) is already done to spec. The missing
+  pieces are cheap, static pages.

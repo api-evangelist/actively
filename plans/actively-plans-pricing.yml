@@ -1,0 +1,52 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.actively.ai/sitemap.xml
+description: >-
+  Pricing search for Actively AI. RESULT: Actively publishes no pricing of any
+  kind. There is no pricing page, no plan tiers, no published quota, and no
+  self-serve signup — every commercial path on the site routes to a sales
+  conversation.
+plan_count: 0
+plans: []
+pricing_model: contact-sales
+self_serve: false
+free_tier: false
+trial: false
+evidence:
+- fetched: '2026-08-13'
+  url: https://www.actively.ai/pricing
+  http_status: 404
+- fetched: '2026-08-13'
+  url: https://www.actively.ai/sitemap.xml
+  http_status: 200
+  note: >-
+    The sitemap enumerates all 62 public pages. It contains no /pricing,
+    /plans, /packages or equivalent. The commercial calls-to-action are
+    /demo ("Request a demo"), /assessment and /gtm-ai-maturity-model.
+- fetched: '2026-08-13'
+  url: https://www.actively.ai/products/api-platform
+  http_status: 200
+  note: >-
+    The API Platform product page carries no pricing — CTAs are "Request a
+    demo", "Talk to an AI GTM Architect" and "Talk to a Solutions Engineer".
+- fetched: '2026-08-13'
+  url: https://www.actively.ai/products/mcp-server
+  http_status: 200
+  note: The MCP server product page carries no pricing.
+- fetched: '2026-08-13'
+  url: https://app.actively.ai/
+  http_status: 307
+  note: >-
+    The application redirects unauthenticated visitors into the WorkOS
+    AuthKit sign-in flow. There is no public sign-up — only sign-in — so a
+    developer cannot provision access without going through sales.
+findings:
+- >-
+  Enterprise contact-sales only. This is a consistent posture rather than an
+  oversight: no pricing, no self-serve signup, no free tier, no trial, and a
+  demo gate in front of both the API Platform and the MCP server.
+- >-
+  The MCP endpoint itself is technically reachable and supports dynamic client
+  registration, so an agent can DISCOVER the server anonymously — but consent
+  requires an Actively account, which requires a sales cycle. Discovery is
+  open; access is gated.

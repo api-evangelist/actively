@@ -1,0 +1,153 @@
+generated: '2026-08-13'
+method: probed
+source: live HTTP probes of every actively.ai host (www, app, api, auth)
+description: >-
+  Well-known probe index for Actively AI. The company website (www.actively.ai)
+  serves nothing under /.well-known/ — every path 404s. The REAL well-known
+  surface is on the API host (api.actively.ai) and the auth host
+  (auth.actively.ai), which together publish the complete OAuth 2.1 / OpenID
+  Connect discovery chain that fronts Actively's hosted MCP server. All four
+  documents below are anonymous, parse as JSON objects, and are served from
+  hosts on the company's own domain.
+checked: '2026-08-13'
+summary:
+  hosts_probed: 4
+  paths_probed: 32
+  documents_found: 4
+  security_txt: false
+  api_catalog: false
+  ai_plugin: false
+hosts:
+- host: www.actively.ai
+  note: >-
+    Framer-hosted marketing site. Every /.well-known/ path returns a genuine
+    404 with the body "Not found" — not an SPA catch-all.
+  paths:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: app.actively.ai
+  note: >-
+    Vercel-hosted application. Every path 307-redirects into the WorkOS
+    AuthKit sign-in flow (api.workos.com/user_management/authorize), so no
+    well-known document is reachable anonymously. Not a 404 — a login wall.
+  paths:
+  - path: /.well-known/security.txt
+    status: 307
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 307
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 307
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 307
+    file: null
+- host: api.actively.ai
+  note: >-
+    The API host. Returns JSON 404s ({"detail":"Not Found"}) for unknown
+    paths, and serves the RFC 9728 protected-resource metadata that points at
+    the hosted MCP server.
+  paths:
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json
+    file: well-known/actively-oauth-protected-resource.json
+    note: >-
+      RFC 9728. resource = https://api.actively.ai/mcp, resource_name =
+      "Actively Intelligence MCP", authorization_servers =
+      [https://auth.actively.ai].
+  - path: /.well-known/oauth-protected-resource/mcp
+    status: 200
+    content_type: application/json
+    file: well-known/actively-oauth-protected-resource.json
+    note: >-
+      Resource-specific variant named by the WWW-Authenticate challenge on
+      POST /mcp. Byte-identical to the root document, so it is not stored twice.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: well-known/actively-oauth-authorization-server.json
+    note: >-
+      RFC 8414, mirrored on the resource host. Advertises PKCE S256, dynamic
+      client registration, and token_endpoint_auth_methods_supported ["none"]
+      (public clients) — the MCP client profile.
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: auth.actively.ai
+  note: >-
+    The authorization server named by the protected-resource metadata. A
+    WorkOS AuthKit deployment on Actively's own domain (the same IdP
+    app.actively.ai signs into).
+  paths:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: well-known/actively-openid-configuration.json
+    note: >-
+      Full OIDC discovery. issuer https://auth.actively.ai, userinfo_endpoint
+      present, RS256 id tokens, scopes openid/profile/email/offline_access.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: well-known/actively-auth-oauth-authorization-server.json
+    note: >-
+      Richer than the api-host mirror — adds device_authorization_endpoint,
+      introspection_endpoint, scopes_supported, and
+      client_id_metadata_document_supported.
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/jwks.json
+    status: 404
+    file: null
+    note: JWKS is served at /oauth2/jwks (200), not the well-known path.
+findings:
+- >-
+  Actively publishes no security.txt on any host, despite operating a written
+  responsible-disclosure policy at www.actively.ai/responsible-disclosure with
+  a security@actively.ai contact. Publishing RFC 9116 security.txt would make
+  that policy machine-discoverable at zero cost.
+- >-
+  No /.well-known/api-catalog and no ai-plugin.json on any host.
+- >-
+  No A2A agent card at either the current (/.well-known/agent-card.json) or
+  legacy (/.well-known/agent.json) path on any of the four hosts.
+- >-
+  The discovery chain is complete and correct for MCP: WWW-Authenticate on the
+  401 names resource_metadata, the protected-resource document names the
+  authorization server, and the authorization server publishes registration
+  and PKCE support. An MCP client can complete the whole handshake from an
+  anonymous start.

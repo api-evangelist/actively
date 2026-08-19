@@ -1,0 +1,115 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  live probes of https://api.actively.ai/mcp and the actively.ai discovery
+  documents
+description: >-
+  Cross-cutting runtime semantics for Actively AI's published surface. Actively
+  ships exactly one machine-callable surface — a hosted MCP server — and no
+  REST API, so the conventions below describe the MCP transport and its
+  authorization envelope. Sections that would normally be derived from an
+  OpenAPI (pagination, expansion, idempotency, error envelope) are recorded as
+  UNKNOWN rather than assumed; there is no contract to read them from.
+
+surface:
+  kind: mcp
+  endpoint: https://api.actively.ai/mcp
+  transport: streamable-http
+  legacy_transport: https://api.actively.ai/mcp/sse
+  rest_api: none-published
+  graphql: none-published
+  note: >-
+    GET/POST on api.actively.ai for /openapi.json, /openapi.yaml,
+    /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc, /schema and
+    /graphql all return JSON 404s. The host is a FastAPI-shaped service with
+    interactive docs disabled.
+
+authentication:
+  style: oauth2-bearer
+  placement: Authorization header
+  scheme: Bearer
+  pkce: S256
+  dynamic_client_registration: true
+  challenge_on_401: >-
+    Bearer error="invalid_token",
+    resource_metadata="https://api.actively.ai/.well-known/oauth-protected-resource/mcp"
+  detail: authentication/actively-authentication.yml
+
+idempotency:
+  supported: unknown
+  header: null
+  note: >-
+    NOT ASSERTED. No idempotency key, retry semantics or replay guidance is
+    published, and the MCP tool list is auth-gated so write-shaped tools
+    cannot be inspected. This artifact deliberately does NOT carry an
+    Idempotency pointer in apis.yml — there is no evidence of idempotency
+    support to point at.
+
+pagination:
+  style: unknown
+  note: >-
+    Not determinable. MCP tool results would carry their own cursor
+    convention if any; the tool schemas are gated.
+
+versioning:
+  style: none-published
+  detail: lifecycle/actively-lifecycle.yml
+
+error_envelope:
+  rfc9457: false
+  formats_observed:
+  - context: OAuth / MCP authorization failure
+    shape: '{"error": "...", "error_description": "..."}'
+    example_status: 401
+    example: '{"error":"invalid_token","error_description":"Authentication required"}'
+    note: RFC 6750 bearer-token error shape.
+  - context: unknown path on the API host
+    shape: '{"detail": "..."}'
+    example_status: 404
+    example: '{"detail":"Not Found"}'
+    note: FastAPI default. Not problem+json.
+  content_type: application/json
+  problem_json: false
+  note: >-
+    Neither shape sets application/problem+json. Only anonymously reachable
+    errors could be observed; the in-band MCP error envelope (JSON-RPC error
+    objects) is gated behind authentication.
+
+rate_limit_signalling:
+  headers: none-observed
+  detail: rate-limits/actively-rate-limits.yml
+
+request_tracing:
+  headers:
+  - name: x-request-id
+    observed: true
+    example_context: 401 from POST /mcp
+  - name: x-cloud-trace-context
+    observed: true
+    note: Google Cloud trace propagation (the API host runs on Google Frontend).
+  note: >-
+    Both are returned unprompted on error responses, so a caller can quote a
+    request id to support — the one operational affordance that is present.
+
+security_headers_observed:
+  host: api.actively.ai
+  headers:
+  - strict-transport-security: max-age=63072000; includeSubDomains
+  - content-security-policy: "default-src 'self'; frame-ancestors 'none';"
+  - x-frame-options: DENY
+  - x-content-type-options: nosniff
+  - referrer-policy: strict-origin-when-cross-origin
+  - cross-origin-opener-policy: same-origin
+  - cross-origin-embedder-policy: require-corp
+  - cross-origin-resource-policy: cross-origin
+  note: >-
+    A notably complete header set on the API host — stronger than the
+    marketing site, which sends strict-transport-security: max-age=0.
+
+cross_references:
+  authentication: authentication/actively-authentication.yml
+  scopes: scopes/actively-scopes.yml
+  rate_limits: rate-limits/actively-rate-limits.yml
+  lifecycle: lifecycle/actively-lifecycle.yml
+  well_known: well-known/actively-well-known.yml
+  mcp: mcp/actively-mcp.yml

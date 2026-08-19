@@ -1,0 +1,75 @@
+generated: '2026-08-13'
+method: probed
+source: https://auth.actively.ai/.well-known/oauth-authorization-server
+docs: null
+docs_note: >-
+  Actively publishes no scopes/permissions reference page. The scope list below
+  is read verbatim from the authorization server's own scopes_supported array,
+  which is the only published source.
+description: >-
+  OAuth scopes advertised by Actively's authorization server
+  (https://auth.actively.ai), which fronts the hosted MCP server at
+  https://api.actively.ai/mcp. The advertised set is the standard OpenID
+  Connect quartet only — there are NO product-specific or resource-scoped
+  permissions published. Whatever authorization Actively applies to
+  per-account agent data is enforced server-side and is not expressed as
+  OAuth scopes a client can request or a reviewer can inspect.
+authorization_server: https://auth.actively.ai
+resource: https://api.actively.ai/mcp
+scope_count: 4
+scopes:
+- name: openid
+  type: openid-connect
+  description: >-
+    Standard OIDC scope. Requests an ID token identifying the authenticated
+    Actively user.
+  source: scopes_supported
+- name: profile
+  type: openid-connect
+  description: >-
+    Standard OIDC scope. Grants access to basic profile claims via
+    https://auth.actively.ai/oauth2/userinfo.
+  source: scopes_supported
+- name: email
+  type: openid-connect
+  description: >-
+    Standard OIDC scope. Grants access to the user's email address claim.
+  source: scopes_supported
+- name: offline_access
+  type: openid-connect
+  description: >-
+    Standard OIDC scope. Requests a refresh token so an agent can maintain a
+    long-lived session against the MCP server without re-consent.
+  source: scopes_supported
+findings:
+- >-
+  NO RESOURCE SCOPES. The MCP resource https://api.actively.ai/mcp is
+  protected, but no scope in the published set names it or any Actively data
+  object (accounts, agents, memory, strategy, research). A client cannot
+  request least-privilege access, and a security reviewer cannot tell from the
+  token what an agent is permitted to read or write.
+- >-
+  This matters more than usual for this provider: the product connects
+  autonomous per-account agents to CRM-derived revenue data in third-party AI
+  clients (ChatGPT, Claude, Cowork). Scope granularity is the control surface
+  a customer would use to bound that, and it is not published.
+- >-
+  Publishing resource-specific scopes (e.g. accounts:read, strategy:read,
+  memory:write) in scopes_supported would be a low-cost, high-value addition
+  and is the single clearest gap in an otherwise spec-clean OAuth
+  implementation.
+evidence:
+- fetched: '2026-08-13'
+  url: https://auth.actively.ai/.well-known/oauth-authorization-server
+  http_status: 200
+  quote: '"scopes_supported": ["email", "offline_access", "openid", "profile"]'
+- fetched: '2026-08-13'
+  url: https://auth.actively.ai/.well-known/openid-configuration
+  http_status: 200
+  quote: '"scopes_supported": ["email", "offline_access", "openid", "profile"]'
+- fetched: '2026-08-13'
+  url: https://api.actively.ai/.well-known/oauth-authorization-server
+  http_status: 200
+  note: >-
+    The api-host mirror omits scopes_supported entirely, so the auth host is
+    the authoritative source.

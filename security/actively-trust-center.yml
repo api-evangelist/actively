@@ -1,0 +1,96 @@
+generated: '2026-08-13'
+method: probed
+source: https://trust.actively.ai/
+name: Actively Trust Center
+url: https://trust.actively.ai/
+description: >-
+  Actively AI operates a public trust center at trust.actively.ai — a Vanta
+  Trust Center on the company's own subdomain. It is the customer-facing
+  surface for security documentation, complementing the narrative security
+  page at www.actively.ai/security.
+platform:
+  vendor: Vanta
+  evidence: >-
+    The page is served from Actively's own domain but rendered by Vanta's
+    trust-report bundle (assets.vanta.com/static/vite/index-trust-report.*,
+    canonical https://trust.actively.ai, og:image https://app.vanta.com/doc?s=...).
+  slug_id: 3d4g42dma0shpytthfey2
+statement: >-
+  "We know that as a customer, you're entrusting us with sensitive data and we
+  take this responsibility very seriously. Security and privacy are top
+  priorities and we're committed to securing your organization's data,
+  eliminating vulnerabilities, and ensuring continuity of access."
+certifications:
+- name: SOC 2 Type II
+  scope: Security trust services category
+  cadence: audited annually
+  availability: report available on request
+  source: https://www.actively.ai/security
+- name: ISO 27001
+  scope: data center (Google Cloud facilities)
+  source: https://www.actively.ai/security
+- name: HITRUST
+  scope: data center (Google Cloud facilities)
+  source: https://www.actively.ai/security
+- name: GDPR
+  scope: data retention; DPA offered for EU customers
+  source: https://www.actively.ai/security
+- name: CCPA
+  scope: policies, processes and controls
+  source: https://www.actively.ai/security
+controls_published:
+- control: encryption in transit
+  detail: "All data sent to or from Actively is encrypted using TLS."
+  source: https://www.actively.ai/security
+- control: encryption at rest
+  detail: >-
+    "all customer data is encrypted using AES-256 and stored in Google
+    BigQuery."
+  source: https://www.actively.ai/security
+- control: physical security
+  detail: >-
+    "All of our data in physically secure Google Cloud facilities that include
+    24/7 on-site security, camera surveillance."
+  source: https://www.actively.ai/security
+- control: availability / fault tolerance
+  detail: >-
+    "Infrastructure has been designed to be fault tolerant. All databases
+    operate in a cluster configuration."
+  source: https://www.actively.ai/security
+- control: server hardening
+  detail: >-
+    "All servers are configured using a documented set of security guidelines
+    and images are managed centrally."
+  source: https://www.actively.ai/security
+- control: subprocessors
+  detail: >-
+    "We use secure subprocessors behind-the-scenes to connect to your
+    Salesforce and other sales software tools."
+  source: https://www.actively.ai/security
+security_contact: security@actively.ai
+disclosure_policy: https://www.actively.ai/responsible-disclosure
+document_access: >-
+  Not machine-readable. The trust center is a client-rendered single-page
+  application; the certification list, document inventory and any NDA/request
+  gate are fetched by JavaScript from Vanta's signed GraphQL API and are not
+  present in the served HTML. The certifications recorded above are therefore
+  sourced from the company's own security page, which states them in plain
+  text.
+limitations:
+- >-
+  trust.actively.ai returns HTTP 200 with a complete <head> (title "Actively
+  Trust Center", full description) but an EMPTY <body> — 5,021 bytes of
+  bootstrap. Nothing about the actual security posture is retrievable without
+  executing JavaScript.
+- >-
+  No subprocessor list, no pen-test summary, no data-residency statement and
+  no SSO/RBAC detail is published in any machine-readable form.
+evidence:
+- fetched: '2026-08-13'
+  url: https://trust.actively.ai/
+  http_status: 200
+  content_type: text/html
+  bytes: 5021
+- fetched: '2026-08-13'
+  url: https://www.actively.ai/security
+  http_status: 200

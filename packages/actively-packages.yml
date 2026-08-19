@@ -1,0 +1,63 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  registry.npmjs.org, pypi.org, api.github.com/orgs/actively-ai,
+  https://www.actively.ai/products/api-platform
+description: >-
+  Registry search for first-party Actively AI client libraries. RESULT: none
+  exist. Actively publishes no SDK in any public package registry, and the
+  public GitHub org contains no client library for its own API.
+package_count: 0
+official_package_count: 0
+packages: []
+registries_searched:
+- registry: npm
+  query: 'text=actively.ai; scope:actively; @actively/mcp'
+  result: >-
+    Zero matches. The @actively scope is unregistered
+    (registry.npmjs.org/@actively/mcp -> 404).
+  checked: '2026-08-13'
+- registry: pypi
+  query: actively, actively-ai, actively-sdk
+  result: All three return HTTP 404.
+  checked: '2026-08-13'
+- registry: github
+  query: github.com/actively-ai (the company's verified org)
+  result: >-
+    11 public repos, 7 of them forks of unrelated OSS (mlflow, pyreal,
+    fastcluster, search_evals, setup-bun, pre-commit-action, a forked
+    slack-mcp-server). The 4 non-forks — tough-client, tough-client-typescript,
+    sample-cli, pyfim — are NOT clients for the Actively API. tough-client and
+    tough-client-typescript are self-contained take-home/simulator exercises
+    (a local FastAPI or Node server plus a `simulator.py <your_name>` runner);
+    sample-cli has a one-line README and no command surface; pyfim is a fork of
+    borgelt.net/pyfim. None of them import, authenticate against, or reference
+    api.actively.ai.
+  checked: '2026-08-13'
+- registry: maven-central
+  result: Not searched — no JVM surface indicated anywhere on the provider site.
+- registry: nuget
+  result: Not searched — no .NET surface indicated anywhere on the provider site.
+findings:
+- >-
+  NO SDKs AT ALL. Actively's only published programmable surface is the hosted
+  MCP server at https://api.actively.ai/mcp, which is consumed by MCP clients
+  over OAuth rather than by a vendor SDK — so the absence is partly by design.
+- >-
+  However the company also markets an "API Platform" product
+  (www.actively.ai/products/api-platform) promising "direct access to
+  per-account agent memory, decisions, and strategy" for embedding into "CRM
+  views, Slack alerts, dashboards, or custom applications". That product has no
+  SDK, no OpenAPI, no documented base URL and no public reference — a customer
+  cannot begin an integration without a sales conversation.
+- >-
+  No MCP stdio package either. There is no npx/pip installable Actively MCP
+  server; the server is remote-only.
+- >-
+  Because no package exists, there is no release cadence to read and therefore
+  no SDK-decay signal available for this provider — version and published
+  fields are null throughout, which reflects absence rather than staleness.
+no_pointer_note: >-
+  This file is deliberately NOT wired as a `SDKs` pointer in apis.yml. It
+  documents a verified absence, and a pointer would assert a surface the
+  provider does not ship.

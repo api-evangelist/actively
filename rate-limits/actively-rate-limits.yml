@@ -1,0 +1,50 @@
+generated: '2026-08-13'
+method: probed
+source: live response-header inspection of api.actively.ai + auth.actively.ai
+description: >-
+  Rate-limit search for Actively AI. RESULT: no published limits and no
+  runtime rate-limit signalling observed on any anonymously reachable
+  response. Actively has no developer documentation host, so there is no
+  limits page to read, and the anonymous responses from the API host carry no
+  rate-limit headers.
+limit_count: 0
+limits: []
+headers_observed: []
+headers_note: >-
+  Responses from https://api.actively.ai/mcp (401) and the /.well-known/
+  documents (200) were inspected header-by-header. None of X-RateLimit-Limit,
+  X-RateLimit-Remaining, X-RateLimit-Reset, RateLimit, RateLimit-Policy,
+  Retry-After or any vendor variant is present. The 401 carries only
+  WWW-Authenticate plus a standard security-header set
+  (strict-transport-security, content-security-policy, x-frame-options,
+  x-content-type-options, referrer-policy, cross-origin-*) and tracing
+  identifiers (x-request-id, x-cloud-trace-context).
+exhaustion_status_code: null
+exhaustion_note: >-
+  Not determinable. Triggering a 429 would require authenticated volume
+  against a production endpoint, which is out of scope for a public,
+  non-credentialed profile.
+evidence:
+- fetched: '2026-08-13'
+  url: https://api.actively.ai/mcp
+  method: POST
+  http_status: 401
+  rate_limit_headers: none
+- fetched: '2026-08-13'
+  url: https://api.actively.ai/.well-known/oauth-protected-resource
+  http_status: 200
+  rate_limit_headers: none
+- fetched: '2026-08-13'
+  url: https://www.actively.ai/docs
+  http_status: 404
+  note: No documentation host exists on which limits could be published.
+findings:
+- >-
+  An agent connecting to Actively's MCP server has no way to learn its budget
+  before it is enforced, and no runtime signal to back off against. For a
+  product whose premise is autonomous per-account agents running "24/7", the
+  absence of a rate-limit contract is a material agent-readiness gap.
+- >-
+  Adding IETF draft `RateLimit` / `RateLimit-Policy` headers (or the X-
+  variants) to MCP responses would be the highest-value single change here,
+  because it is the only limit signal an autonomous client can act on.

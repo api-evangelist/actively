@@ -1,13 +1,14 @@
-generated: '2026-07-17'
-method: searched
-status: marketing
-source: https://www.actively.ai/products/mcp-server
-name: Actively MCP
+generated: '2026-08-13'
+method: probed
+status: live
+status_raw: probed
+source: https://api.actively.ai/.well-known/oauth-protected-resource
+name: Actively Intelligence MCP
 summary: >-
   Actively MCP is a productized Model Context Protocol server that connects
   Actively's Per-Account Agents (per-account research, strategy, and memory)
-  directly into external AI tools. Marketed as an intelligence layer for AI
-  agents.
+  directly into external AI tools. It is a HOSTED REMOTE server: an MCP client
+  POSTs to https://api.actively.ai/mcp and authenticates with OAuth 2.1.
 integrations:
 - ChatGPT
 - Claude
@@ -17,14 +18,112 @@ capabilities:
 - account strategy
 - persistent memory / reasoning loops
 - context enrichment for customer-facing agents
-endpoint: null
-authentication: null
-notes: >-
-  Publicly announced product page only. No hosted MCP server URL, tool schema,
-  or authentication detail is published; access is gated behind a sales/demo
-  process. Tool list is NOT derived (no public OpenAPI to ground it).
+
+deployment:
+  mode: remote
+  endpoint: https://api.actively.ai/mcp
+  auth: oauth
+  verified: probed
+  checked: '2026-08-13'
+  source: >-
+    POST https://api.actively.ai/mcp returned HTTP 401 with a spec-compliant
+    WWW-Authenticate challenge, and the resource metadata it names resolves
+    anonymously to resource "https://api.actively.ai/mcp", resource_name
+    "Actively Intelligence MCP".
+  install: null
+  package: null
+  note: >-
+    Remote only. Actively publishes no stdio/npx package — there is nothing to
+    install. The endpoint is callable by any MCP client that can complete the
+    OAuth flow, which makes this a genuine agent surface rather than a
+    developer-machine integration.
+
+endpoint: https://api.actively.ai/mcp
+transport: streamable-http
+authentication:
+  type: oauth2
+  flow: authorization_code
+  pkce: S256
+  bearer_methods_supported:
+  - header
+  authorization_server: https://auth.actively.ai
+  dynamic_client_registration: https://auth.actively.ai/oauth2/register
+  authorization_endpoint: https://auth.actively.ai/oauth2/authorize
+  token_endpoint: https://auth.actively.ai/oauth2/token
+  device_authorization_endpoint: https://auth.actively.ai/oauth2/device_authorization
+  scopes_supported:
+  - openid
+  - profile
+  - email
+  - offline_access
+  note: >-
+    Client credentials are not required up front — the authorization server
+    supports RFC 7591 dynamic client registration and
+    token_endpoint_auth_methods_supported ["none"], the public-client profile
+    MCP clients use. A human Actively login is still required to consent, so
+    the server is reachable but not anonymously usable.
+
+tools: []
+tools_status: gated
+tools_note: >-
+  NOT DERIVED AND NOT GUESSED. POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}
+  with Accept: application/json, text/event-stream returns HTTP 401
+  {"error":"invalid_token","error_description":"Authentication required"} — the
+  live tool list and per-tool inputSchema require an authenticated
+  introspection. Actively publishes no OpenAPI and no llms.txt, so there is no
+  second source to fall back to for tool names. The tool surface is recorded as
+  UNKNOWN rather than invented.
+
+discovery:
+  well_known_protected_resource: https://api.actively.ai/.well-known/oauth-protected-resource
+  well_known_protected_resource_scoped: https://api.actively.ai/.well-known/oauth-protected-resource/mcp
+  well_known_authorization_server: https://api.actively.ai/.well-known/oauth-authorization-server
+  openid_configuration: https://auth.actively.ai/.well-known/openid-configuration
+  spec_compliance: >-
+    Complete MCP authorization chain per the 2025-06-18 spec: RFC 9728
+    protected-resource metadata, RFC 8414 authorization-server metadata,
+    RFC 7591 dynamic client registration, RFC 7636 PKCE.
+
 evidence:
+- fetched: '2026-08-13'
+  url: https://api.actively.ai/mcp
+  method: POST
+  http_status: 401
+  content_type: application/json
+  body: '{"error":"invalid_token","error_description":"Authentication required"}'
+  www_authenticate: >-
+    Bearer error="invalid_token",
+    resource_metadata="https://api.actively.ai/.well-known/oauth-protected-resource/mcp"
+- fetched: '2026-08-13'
+  url: https://api.actively.ai/.well-known/oauth-protected-resource
+  http_status: 200
+  content_type: application/json
+  quote: >-
+    {"resource":"https://api.actively.ai/mcp","authorization_servers":["https://auth.actively.ai"],"bearer_methods_supported":["header"],"resource_name":"Actively
+    Intelligence MCP"}
+- fetched: '2026-08-13'
+  url: https://api.actively.ai/mcp/sse
+  method: GET
+  http_status: 401
+  note: The legacy SSE transport path also exists and is auth-gated.
 - source: https://www.actively.ai/products/mcp-server
+  kind: product page
   quote: >-
     Actively MCP connects Per-Account Agents directly to ChatGPT, Cowork, and
     the AI tools that reps already use.
+
+ownership:
+  verified: true
+  rationale: >-
+    Every host in the chain is on the company's own apex domain — the endpoint
+    is api.actively.ai, the authorization server is auth.actively.ai, and the
+    protected-resource document names itself "Actively Intelligence MCP". No
+    third-party or sibling-brand host is involved.
+
+notes: >-
+  UPGRADE over the 2026-07-17 pass, which recorded this server as "announced /
+  marketing" with a null endpoint because only the product page had been read.
+  The server is in fact live and its address is discoverable anonymously: the
+  API host was never probed in the first round. Access still requires an
+  Actively account, and the product page routes prospects through a demo
+  request, so the server is reachable-but-gated rather than self-serve.
