@@ -8,6 +8,17 @@ description: >-
   Watchtower, an API for embedding GTM intelligence into internal tools and
   workflows, and a hosted MCP server that connects its per-account agents into
   ChatGPT, Claude, and Cowork. Actively is backed by Bain Capital Ventures.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: contact-sales
   onboarding: sales-gate
