@@ -1,0 +1,29 @@
+# Front Door AI Index — actively — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: actively
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.actively.ai
+  final_host: www.actively.ai
+  ownership: own
+  owner: actively
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 16
+  host_score: 16
+  density: 12.21
+  words: 1310
+  tiers:
+    agentic: 3
+    core: 13
+    model: 0
+  ambiguous: 26
+  top_terms:
+    agent: 22
+    AI: 13
+    intelligence: 4
+    fine-tune: 2
+    AI agent: 1
